@@ -1,93 +1,74 @@
-# Checkpoint 2 – Aplicações de Machine Learning para dados de energia
+```markdown
+# Avaliação — APIs de Energia Renovável e Aprendizado de Máquina
 
-Este repositório será utilizado para o desenvolvimento do **Checkpoint 2**, composto por quatro partes relacionadas à aplicação de técnicas de Machine Learning em dados de estabilidade de redes elétricas.
+Este projeto consiste na coleta de dados de duas APIs públicas (ANEEL e Open-Meteo), organização de conjuntos de dados locais em formato CSV e a resolução de duas tarefas de aprendizado de máquina utilizando modelos de classificação e regressão.
 
-As atividades utilizarão como referência o conjunto de dados **Electrical Grid Stability Simulated Data**, disponibilizado pela UCI Machine Learning Repository.
+## 📋 Estrutura do Repositório
 
-Fonte dos dados: [Electrical Grid Stability Simulated Data – UCI](https://archive.ics.uci.edu/dataset/471/electrical+grid+stability+simulated+data)
+- `projeto.ipynb`: Notebook executável contendo as consultas às APIs, análise exploratória, tratamento de dados e modelagem.
+- `aneel_classificacao_orange.csv`: Dados extraídos do SIGA (ANEEL) para a tarefa de classificação.
+- `meteo_regressao_orange.csv`: Dados meteorológicos históricos de Petrolina (PE) para a tarefa de regressão.
+- `README.md`: Este arquivo com a documentação do projeto.
 
-## Organização do Checkpoint
+---
 
-O Checkpoint será distribuído em quatro partes:
+## 🛠️ Instalação e Execução
 
-### Parte 1 – Classificação (Aula 06)
+1. Clone este repositório:
+   ```bash
+   git clone <LINK_DO_SEU_REPOSITORIO>
+   cd <NOME_DO_REPOSITORIO>
+   ```
 
-Desenvolvimento de um modelo de classificação utilizando **Regressão Logística** para prever a condição da rede elétrica.
+2. Instale as dependências necessárias utilizando pip:
+   ```bash
+   pip install pandas numpy scikit-learn matplotlib seaborn
+   ```
 
-- variável target: `stabf`;
-- classes previstas: estável ou instável;
-- separação dos dados em treino e teste;
-- treinamento do modelo;
-- geração das previsões;
-- avaliação dos resultados por meio de métricas de classificação e matriz de confusão.
+3. Abra o Jupyter Notebook ou envie o arquivo `.ipynb` para o Google Colab e execute todas as células em ordem cronológica.
 
-O notebook da aula anterior poderá ser utilizado como referência para o desenvolvimento desta parte.
+---
 
-### Parte 2 – Regressão (Aula 07)
+## ⚡ Tarefa 1 — Classificação de Fontes de Energia (ANEEL)
 
-Desenvolvimento de modelos de **Regressão Linear** para prever o valor numérico da variável `stab`.
+### **Objetivo**
+Classificar a fonte de geração de energia de um empreendimento cadastrado na ANEEL como **Solar, Eólica ou Hidráulica** com base em sua **potência (kW), latitude e longitude**.
 
-Nesta etapa, deverão ser treinados e comparados dois modelos:
+### **Metodologia**
+- **Divisão dos Dados**: Divisão estratificada com 80% para treino e 20% para teste, garantindo a mesma proporção de classes.
+- **Algoritmos Testados**:
+  1. Regressão Logística (com dados padronizados)
+  2. K-Nearest Neighbors (KNN com `n_neighbors=7` e dados padronizados)
+  3. Random Forest Classifier (`n_estimators=300` e dados originais)
+- **Métricas de Avaliação**: Accuracy, Precision (Macro), Recall (Macro) e F1-Score (Macro).
 
-1. modelo utilizando as cinco variáveis com maior correlação absoluta com `stab`;
-2. modelo utilizando todas as variáveis cujos nomes começam com `tau` ou `g`.
+### **Resultados Obtidos**
 
-Os modelos deverão ser avaliados comparativamente por meio das métricas:
+| Modelo | Accuracy | Precision (Macro) | Recall (Macro) | F1-Score (Macro) |
+| :--- | :---: | :---: | :---: | :---: |
+| **Random Forest** | **97.55%** | **97.69%** | **97.41%** | **97.53%** |
+| KNN | 96.52% | 96.68% | 96.33% | 96.47% |
+| Regressão Logística | 82.47% | 82.82% | 82.14% | 81.97% |
 
-- R²;
-- MAE;
-- MSE.
+* **Modelo Escolhido**: O **Random Forest** obteve o melhor desempenho em todas as métricas, atingindo um F1-Score macro de **97.53%**.
+* **Maior Confusão**: O modelo confundiu levemente a classe **Solar sendo classificada como Hidráulica** em alguns casos pontuais (7 ocorrências).
 
-A análise deverá considerar os resultados dos dois modelos, identificando o efeito da seleção das variáveis sobre o desempenho das previsões.
+---
 
-### Parte 3 – Clustering
+## ☀️ Tarefa 2 — Regressão de Radiação Solar (Open-Meteo)
 
-Aplicação de uma técnica de **aprendizado não supervisionado** para identificar agrupamentos entre os registros do dataset.
+### **Objetivo**
+Estimar a radiação solar horizontal global média ($W/m^2$) em Petrolina (PE) com base em condições meteorológicas locais (temperatura, umidade, cobertura de nuvens, velocidade do vento e a hora local).
 
-Nesta parte, serão realizadas a preparação das variáveis, a criação dos grupos e a análise das características observadas em cada agrupamento.
+### **Metodologia**
+- **Divisão dos Dados**: Divisão estritamente temporal (80% primeiros registros para treino, 20% finais para teste) preservando o histórico temporal sem embaralhar.
+- **Algoritmos Testados**:
+  1. Regressão Linear
+  2. Árvore de Decisão (Decision Tree Regressor)
+  3. Random Forest Regressor
+- **Métricas de Avaliação**: Erro Médio Absoluto (MAE), Erro Quadrático Médio (MSE) e Coeficiente de Determinação ($R^2$).
 
-As orientações específicas e os critérios para interpretação dos clusters serão apresentados no respectivo roteiro da atividade.
-
-### Parte 4 – Desafio final e apresentação
-
-Desenvolvimento de um desafio final que reunirá os conhecimentos trabalhados nas etapas anteriores.
-
-O grupo deverá analisar os resultados obtidos, justificar as decisões tomadas durante o desenvolvimento e preparar uma apresentação do trabalho.
-
-As orientações do desafio final, os itens obrigatórios e o formato da apresentação serão divulgados na etapa correspondente.
-
-## Orientações gerais
-
-- Desenvolva as atividades em notebooks Python no Google Colab.
-- Utilize células Markdown para organizar as etapas, registrar explicações e responder às questões propostas.
-- Mantenha os códigos executados e os resultados visíveis.
-- Identifique os integrantes do grupo com nome completo e RM.
-- Revise os notebooks antes de fazer o upload.
-- Mantenha todos os arquivos do Checkpoint organizados neste repositório.
-- Não substitua os arquivos das etapas anteriores; cada parte deverá permanecer disponível para consulta e avaliação.
-
-## Organização sugerida do repositório
-
-```text
-checkpoint2-ML-SERS-1CCPO/
-├── README.md
-├── dados/
-│   └── Data_for_UCI_named.csv
-├── parte_1_classificacao/
-│   └── classificacao_estabilidade.ipynb
-├── parte_2_regressao/
-│   └── regressao_estabilidade.ipynb
-├── parte_3_clustering/
-│   └── clustering_estabilidade.ipynb
-└── parte_4_desafio_final/
-    ├── desafio_final.ipynb
-    └── apresentacao.pdf
+### **Discussão & Conclusões**
+1. **Peso da Hora**: A hora do dia se mostrou a variável mais impactante por representar a curva parabólica solar natural (limite teórico de irradiação ao longo do dia).
+2. **Radiação vs Energia Efetiva**: Estimar a radiação em $W/m^2$ não se traduz diretamente em geração elétrica real. Fatores práticos do sistema fotovoltaico físico — como eficiência das placas, perdas por calor, eficiência dos inversores, perdas na fiação e sujeira — influenciam a energia final produzida.
 ```
-
-Os nomes das pastas e dos arquivos poderão ser ajustados conforme as orientações fornecidas em cada etapa.
-
-## Entrega
-
-Cada parte deverá ser adicionada ao repositório conforme o andamento do Checkpoint. Antes da entrega final, confirme se os notebooks estão organizados, executados e acessíveis.
-
-O repositório deverá reunir as quatro partes do trabalho: **classificação, regressão, clustering e desafio final com apresentação**.
